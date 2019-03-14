@@ -7,6 +7,7 @@
 #include "stdio.h"
 #include <stdbool.h>
 #include "array.h"
+#include "coord.h"
 /*
 const int iSize = 10;	//Размерность матрицы
 int iMap[10][10];	//Карта; 0 - свободно, 1 - препятсвие
@@ -20,7 +21,7 @@ int iResultY[100];	//Y-координата пути; [0] - точка НАЧА�
 //x0, y0 - начальная координата; x1, y1 - конечная координата
 //волну начинаем запускать с точки назначения
 
-bool WaveStart(int x0, int y0, int x1, int y1, arr* iMap, int **iStepMap, int *iResultX, int *iResultY)
+bool WaveStart(coord start, coord end, arr* iMap, int **iStepMap, int *iResultX, int *iResultY)
 {
 	//объявление и инициализация
 	int iStep = 0;
@@ -36,27 +37,24 @@ bool WaveStart(int x0, int y0, int x1, int y1, arr* iMap, int **iStepMap, int *i
 			else
 				iStepMap[i][j] = -1;	//не посещено
 		}
-		printf("1");
 	for (int i = 0; i < (iMap -> n_rows * iMap -> n_columns); i++)
 	{
 		iResultX[i] = -1;
 		iResultY[i] = -1;
 	}
-		printf("2");
 	iStep = 0;
 	//--------
-	iStepMap[x1][y1] = iStep;
+	iStepMap[end.x][end.y] = iStep;
 	//--------
 	//проверка координат на свободно/занято
-	if ((iMap -> ptr[x0][y0]) == 1 || (iMap -> ptr[x1][y1]) == 1)
+	if ((iMap -> ptr[start.x][start.y]) == 1 || (iMap -> ptr[end.x][end.y]) == 1)
 	{
 		bResult = false;
 
 		return bResult;
 	}
-		printf("3");
 	//Начало ВОЛНЫ. пускаем волну
-	while (bAdded && iStepMap[x0][y0] == -1)
+	while (bAdded && iStepMap[start.x][start.y] == -1)
 	{
 		bAdded = false;	//ничего еще не добавили
 		iStep++;	//Увеличиваем число шагов
@@ -94,13 +92,12 @@ bool WaveStart(int x0, int y0, int x1, int y1, arr* iMap, int **iStepMap, int *i
 				}
 	}
 	//Конец ВОЛНЫ.
-		printf("4");
 	//Обработка результатов ВОЛНЫ
 	//Если начальная точка (x0,y0) не обработана (=-1, =-2), то ПУТЬ не найден
 	// -1 - не посещали, -2 - препятствие
-	if (iStepMap[x0][y0] == -1 || iStepMap[x0][y0] == -2)
+	if (iStepMap[start.x][start.y] == -1 || iStepMap[start.x][start.y] == -2)
 		bResult = false;
-	else if (iStepMap[x0][y0] >= 0)
+	else if (iStepMap[start.x][start.y] >= 0)
 	{
 		bResult = true;
 		//WavePath(x0, y0);
@@ -110,30 +107,27 @@ bool WaveStart(int x0, int y0, int x1, int y1, arr* iMap, int **iStepMap, int *i
 }
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void PathResult(int x0, int y0, int x1, int y1, const int iSize, int **iStepMap, int* iResultX, int* iResultY)
+void PathResult(coord start, coord end, int iSize, int **iStepMap, int *iResultX, int *iResultY)
 {
-	int iStep = iStepMap[x0][y0];
+	int iStep = iStepMap[start.x][start.y];
 	int iI = 0;
-	int x = x0, y = y0;	//координаты предыдущей точки маршрута
+	int x = start.x, y = start.y;	//координаты предыдущей точки маршрута
 	bool bAdded = true;	//Внесены изменения; для контроля цикла
-	printf("0");
-	iResultX[iI] = x0;
-	iResultY[iI] = y0;
+	iResultX[iI] = start.x;
+	iResultY[iI] = start.y;
 
-	if (x0 == x1 && y0 == y1)
+	if (start.x == end.x && start.y == end.y)
 	{
-		iResultX[iI] = x1;
-		iResultY[iI] = y1;
+		iResultX[iI] = end.x;
+		iResultY[iI] = end.y;
 		return;
 	}
-	printf("1");
 	//Начало СОХРАНЕНИЯ ПУТИ. пускаем волну
 	while (bAdded && iStep >= 0)
 	{
 		bAdded = false;	//ничего еще не добавили
 		iI++;		//номер следующей точки найденного маршрута
 		iStep--;	//Увеличиваем число шагов
-		printf("2");
 		for (int i = 0; i < iSize; i++)	// Пробегаем по всей карте
 			for (int j = 0; j < iSize; j++)
 				//Если точка с координатами (i;j) обрабатывалась на
@@ -170,8 +164,8 @@ void PathResult(int x0, int y0, int x1, int y1, const int iSize, int **iStepMap,
 				}
 	}
 	//Конец СОХРАНЕНИЯ ПУТИ.
-	iResultX[iI + 1] = x1;
-	iResultY[iI + 1] = y1;
+	iResultX[iI + 1] = end.x;
+	iResultY[iI + 1] = end.y;
 
 	return;
 }

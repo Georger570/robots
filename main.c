@@ -6,6 +6,7 @@
 int main()
 {
 	FILE *map_in;
+	FILE *map_out;
 	if ((map_in = fopen("map.txt", "r")) != NULL)
 	{
 		arr *array = InitArray(map_in);		
@@ -13,21 +14,7 @@ int main()
 		PrintArray(array);
 		//int iSize = array->n_rows;	//Размерность матрицы
 		//int iMap[array->n_rows][array->n_columns];	//Карта; 0 - свободно, 1 - препятсвие
-		printf("\n");		
-		/*int **iMap = (int**) calloc(array-> n_rows, sizeof(int*));
-		for ( int i = 0; i<array->n_columns; i++)
-		{
-			iMap[i] = (int*) calloc(array-> n_columns, sizeof(int));
-		}
-		for(int i = 0; i<(array->n_rows); i++)
-		{
-			for(int j = 0; j<(array->n_columns); j++)
-			{ 
-				iMap[i][j]=array->ptr[i*array->n_columns+j];
-				printf("%d", iMap[i][j]);
-			}	
-			printf("\n");		
-		}*/		
+		printf("\n");			
 		int **iStepMap = (int**) calloc(array-> n_rows, sizeof(int*));
 		for ( int i = 0; i<array->n_columns; i++)
 		{
@@ -36,8 +23,9 @@ int main()
 						// -1 - не посещали, -2 - препятствие
 		int *iResultX = (int*) calloc(array->n_rows * array->n_columns, sizeof(int));	//X-координата пути; [0] - точка НАЧАЛА
 		int *iResultY = (int*) calloc(array->n_rows * array->n_columns, sizeof(int));;	//Y-координата пути; [0] - точка НАЧАЛАa
-		int start_x=0, start_y=0, end_x=4, end_y=4;
-		WaveStart( start_x, start_y, end_x, end_y,  array, iStepMap, iResultX, iResultY);
+		coord start, end;
+		start.x = 1, start.y = 0, end.x = 9, end.y = 7;		
+		WaveStart(start, end,  array, iStepMap, iResultX, iResultY);
 		printf("\n");
 		for(int i = 0; i<(array->n_rows); i++)
 		{
@@ -48,7 +36,18 @@ int main()
 			}
 			printf("\n");	
 		}
-		//PathResult( start_x, start_y, end_x, end_y, iSize, &iMap, &iStepMap, &iResultX, &iResultY);					
+		PathResult(start, end, array->n_rows, iStepMap, iResultX, iResultY);
+		map_out = fopen("map_out.txt", "w");
+		for (int i = 0; i<(array->n_rows*array->n_columns); i++)
+		{
+			fprintf(map_out, "%d " , iResultX[i]);
+		}
+		fprintf(map_out, "\n");
+		for (int i = 0; i<(array->n_rows*array->n_columns); i++)
+		{
+			fprintf(map_out, "%d " , iResultY[i]);
+		}
+		fclose(map_out);
 	}	
 	else printf("Error. File is missing!\n");
 	

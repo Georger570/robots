@@ -23,11 +23,11 @@ arr* InitArray(FILE *map_in)
 		{			
 			for(int j = 0; j<(array->n_columns); j++)
 			{ 
-				array->ptr[i][j] = 0;
-				char a;				
-				array->ptr[i][j] = getc(map_in) - '0';
-				if (array->ptr[i][j] < 0)
-					j--;
+				//array->ptr[i][j] = 0;
+				fscanf(map_in, "%d" , &(array->ptr[i][j]));				
+				//array->ptr[i][j] = getc(map_in) - '0';
+				//if (array->ptr[i][j] < 0)
+					//j--;
 			}	
 		}			
 		return array;
