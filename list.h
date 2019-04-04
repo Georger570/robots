@@ -18,11 +18,11 @@ public:
 
     List() : head(NULL), tail(NULL) {};
     ~List();
-    void addInBeginOfList(int x, int y);
+    void addInBeginOfList(coord position); //
     bool isEmptyList();
     void showList();
-    node* findInList(int x, int y);
-    bool isAlreadyInList(int x, int y);
+    node* findInList(coord position, char flag);
+    bool isAlreadyInList(coord position);
     coord popList();
     void deleteNodeInList(node** nodeAdress);
 };
