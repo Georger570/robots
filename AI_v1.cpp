@@ -1,9 +1,10 @@
-public class AI_v1
+
+class AI_v1
 {
     //Robot
     int TurnCount = 0;
-    //WorkWithFiles Explored = new WorkWithFiles("pam.txt"); 						//Without work with files
-    //WorkWithFiles Unexplored = new WorkWithFiles("tif.txt");						//Without work with files
+    //WorkWithFiles Explored = new WorkWithFiles("pam.txt");
+    //WorkWithFiles Unexplored = new WorkWithFiles("tif.txt");
     MovementIntelligence MovementAI;
     public bool changeFlag = false;
     public float sensorLength = 2.0f;
@@ -29,18 +30,17 @@ public class AI_v1
      
     //Map
     Map map;
-    
-    //List
-    List Explored;
-    List Unexplored;
 
+	//Lists
+	List Explored;
+	List Unexplored;
 
     void Start()
     {
         MovementAI = new MovementIntelligence(Explored, Unexplored);
         MovementAI.Init(transform);
-        myColloder = transform.GetComponent<Collider>();
-        robot_size = (int) 1;
+        //myColloder = transform.GetComponent<Collider>();
+        robot_size = (int) 21;
         map = new Map(MovementAI, MovementAI.hit, transform);
     }
 
@@ -61,7 +61,7 @@ public class AI_v1
             MovementAI.TurnFunction(turnAngle, ref BackFlag);
             TurnCount++;
         }
-        else if (Explored.isAlreadyinFile(MovementAI.getFuturePosition()) == true && BackFlag == true)
+        else if (Explored.isAlreadyInList(MovementAI.getFuturePosition()) == true && BackFlag == true)
         {
             TurnCount++;
             MovementAI.speed = 0;
@@ -80,23 +80,23 @@ public class AI_v1
         }
     }
 
-    int Sensors(coordinates position)
+    int Sensors(coord position)
     {
-        coord_direction side_direction;
-        if (!Physics.Raycast(transform.position, transform.right, out MovementAI.hit, (transform.localScale.x)) && !MovementAI.CheckSide(transform.right))
+        coord side_direction;
+        if (!IsObstacleWithinReach(RightSensor, distance) && !MovementAI.CheckSide(transform.right))
         {
             side_direction = MovementAI.Direction_if_TurnRight(MovementAI.direction);
-            if (!Unexplored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
+            if (!Unexplored.isAlreadyinList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
             {
-                Unexplored.addInBeginOfList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
+                Unexplored.AppendLine(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
             }
         }
-        if (!Physics.Raycast(transform.position, -transform.right, out MovementAI.hit, (transform.localScale.x)) && !MovementAI.CheckSide(-transform.right))
+        if (!IsObstacleWithinReach(RightSensor, distance) && !MovementAI.CheckSide(-transform.right))
         {
             side_direction = MovementAI.Direction_if_TurnLeft(MovementAI.direction);
             if (!Unexplored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
             {
-                Unexplored.addInBeginOfList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
+                Unexplored.AppendLine(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
             }
         }
         return 1;

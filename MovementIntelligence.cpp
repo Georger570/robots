@@ -1,163 +1,99 @@
-public struct coord_direction
-{
-	public int x;
-	public int z;
-}
-
-public struct coordinates
-{
-	public int x;
-	public int z;
-}
+#include "coord.h"
 
 class MovementIntelligence
 {
         //Robot
-        public Transform transform;
-        public RaycastHit hit;
         public float speed = 1f;
         public float speedValue = 10f;
         public float directionValue = 1.0f;
             
         //Position of Robot
-        coordinates CurrentPosition;
-        public coord_direction direction;
-        public Vector3 movement = new Vector3(0, 0, 0);
+        coord CurrentPosition; //Текущая позиция
+        public coord direction; //Текущее направление движения робота
+        public int movement = 0; //Переменная, отвечающая за расстояние, пройденное роботом
 
         //"Covering all holes"
         public bool BackFlag = true;
         public int XX = 0;
         public int ZZ = 0;
 
-        /*Files REPLACE_ME
-        WorkWithFiles Explored;
-        WorkWithFiles Unexplored;
-		*/
+        //Files
+        //WorkWithFiles Explored;
+        //WorkWithFiles Unexplored;
 		
+		//List
+		List Explored;
+		List Unexplored;
+
         public MovementIntelligence(WorkWithFiles File, WorkWithFiles File2)
         {
             Explored = File;
             Unexplored = File2;
+            direction(1,0);
+			CurrentPosition(0,0);            
         }
-
-        public void SetRobot(Transform r)
+		
+		public void setMovement(int mov)
+		{
+			movement = mov;
+		}		
+	
+        public void Moition() //Функция движения
         {
-            transform = r;
+            transform.position += transform.forward * (speed * directionValue) * Time.deltaTime; //Передвижение робота
+            movement += transform.forward * (speed * directionValue) * Time.deltaTime; //Текущее растояние, пройденное роботом
         }
 
-        public void Init(Transform r)
+        public coord  getFuturePosition() 
         {
-            transform = r;
-            direction.x = 1;
-            direction.z = 0;
-            CurrentPosition.x = 0;
-            CurrentPosition.z = 0;
+ 	       return (direction + CurrentPosition);
         }
 
-        public void Moition()
-        {
-            transform.position += transform.forward * (speed * directionValue) * Time.deltaTime;
-            movement += transform.forward * (speed * directionValue) * Time.deltaTime;
-        }
-
-        public coordinates  getFuturePosition()
-        {
-            coordinates FuturePosition;
-            FuturePosition.x = direction.x + CurrentPosition.x;
-            FuturePosition.z = direction.z + CurrentPosition.z;
-            return FuturePosition;
-        }
-
-        public coordinates getCurrentPosition()
+        public coord getCurrentPosition() //Получить текущую позицию робота
         {
             return CurrentPosition;
         }
 
-        public bool AheadIsObstacle()
+        public bool IsObstaclesAround() //Определение, есть ли препятсвие рядом
         {
-            if (Physics.Raycast(transform.position, transform.forward, out hit, (transform.localScale.x)))
+            if (IsObstacleWithinReach(FrontSensor, distance) || IsObstacleWithinReach(RightSensor, distance) || IsObstacleWithinReach(LeftSensor, distance))
                 return true;
             else return false;
         }
 
-        public bool RightIsObstacle()
+        public bool TryToRegisterMotion(int robot_size) //Определение, прошёл ли робот расстояние, равное длине его корпуса
         {
-            if (Physics.Raycast(transform.position, transform.right, out hit, (transform.localScale.z)))
-                return true;
-            else return false;
-        }
-
-        public bool LeftIsObstacle()
-        {
-            if (Physics.Raycast(transform.position, -transform.right, out hit, (transform.localScale.z)))
-                return true;
-            else return false;
-        }
-
-        public bool IsObstaclesAround()
-        {
-            if (AheadIsObstacle() || RightIsObstacle() || LeftIsObstacle())
-                return true;
-            else return false;
-        }
-
-        public bool TryToRegisterMotion(float robot_size) //transform.localScale.z
-        {
-            if (Math.Abs(movement.x) >= robot_size)
+            if (movement >= robot_size)
             {
-                if (movement.x < 0)
-                    movement.x = movement.x + robot_size;
-                else if (movement.x > 0)
-                    movement.x = movement.x - robot_size;
-                CurrentPosition.x = CurrentPosition.x + direction.x;
-                CurrentPosition.z = CurrentPosition.z + direction.z;
+				movement -= robot_size;
+                CurrentPosition += direction;
                 //print(x + " " + z);
                 return true;
                 //WriteFlag = true;
 
-            }
-            else if (Math.Abs(movement.z) >= robot_size)
-            {
-                if (movement.z < 0)
-                    movement.z = movement.z + robot_size;
-                else if (movement.z > 0)
-                    movement.z = movement.z - robot_size;
-                CurrentPosition.x = CurrentPosition.x + direction.x;
-                CurrentPosition.z = CurrentPosition.z + direction.z;
-                //print(x + " " + z);
-                return true;
-                //WriteFlag = true;
             }
             return false;
         }
 
-        public bool CheckSide(Vector3 side)
+        public bool CheckSide(int side, List Explored)
         {
-            coord_direction side_direction;
+            coord side_direction;
             if (side == transform.right)
             {
                 side_direction = Direction_if_TurnRight(direction);
-                return Explored.isAlreadyinFile(getPosition(side_direction, CurrentPosition));
+                return Explored.IsAlreadyInList(getFuturePosition(side_direction, CurrentPosition));
             }
             else if (side == -transform.right)
             {
                 side_direction = Direction_if_TurnLeft(direction);
-                return Explored.isAlreadyinFile(getPosition(side_direction, CurrentPosition));
+                return Explored.IsAlreadyInList(getFuturePosition(side_direction, CurrentPosition));
             }
             else if (side == -transform.forward)
             {
                 side_direction = Direction_if_TurnAround(direction);
-                return Explored.isAlreadyinFile(getPosition(side_direction, CurrentPosition));
+                return Explored.IsAlreadyInList(getFuturePosition(side_direction, CurrentPosition));
             }
             return false;
-        }
-
-        public coordinates getPosition(coord_direction direction, coordinates CurrentPosition)
-        {
-            coordinates FuturePosition;
-            FuturePosition.x = CurrentPosition.x + direction.x;
-            FuturePosition.z = CurrentPosition.z + direction.z;
-            return FuturePosition;
         }
 
         public bool Emergency()
@@ -168,12 +104,8 @@ class MovementIntelligence
 
         public int TurnFunction(int turnAngle, ref bool BackFlag)
         {
-            /*if (hit.collider.tag != "Obstacle" || hit.collider == myColloder)
-            {
-                return 0;
-            }*/
-            coord_direction side_direction;
-            if (!(Physics.Raycast(transform.position, transform.right, out hit, (transform.localScale.x * 2)))
+            coord side_direction;
+            if (!IsObstacleWithinReach(RightSensor, distance))
                 && (!CheckSide(transform.right) && BackFlag ))
                                                         /*(((side_direction.x = Direction_if_TurnRight(direction).x + x) < (side_direction.x = Direction_if_TurnLeft(direction).x + x))
                                                         || ((side_direction.z = Direction_if_TurnRight(direction).z + z) < (side_direction.z = Direction_if_TurnLeft(direction).z + z))))))*/
@@ -267,7 +199,7 @@ class MovementIntelligence
             return true;
         }
 
-        public coord_direction Direction_if_TurnRight(coord_direction direction)
+        public coord Direction_if_TurnRight(coord direction)
         {
             if (direction.x == 1)
             {
@@ -291,7 +223,7 @@ class MovementIntelligence
             }
             return direction;
         }
-        public coord_direction Direction_if_TurnLeft(coord_direction direction)
+        public coord Direction_if_TurnLeft(coord direction)
         {
             if (direction.x == 1)
             {
@@ -315,7 +247,7 @@ class MovementIntelligence
             }
             return direction;
         }
-        public coord_direction Direction_if_TurnAround(coord_direction direction)
+        public coord Direction_if_TurnAround(coord direction)
         {
             if (direction.x == 1)
             {
