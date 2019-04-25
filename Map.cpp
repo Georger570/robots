@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -24,18 +25,42 @@ namespace Assets
         {
             MovementAI = AI;
             transform = tran;
+=======
+#include "Memlib.h" 
+
+class Map
+{
+        const int size = 40;
+        int** Z_negative_X_positive = MemoryAllocation(size);
+        int** Z_positive_X_positive = MemoryAllocation(size);
+        int** Z_positive_X_negative = MemoryAllocation(size);
+        int** Z_negative_X_negative = MemoryAllocation(size);
+        MovementIntelligence MovementAI;
+
+        public Map(MovementIntelligence AI)
+        {
+            MovementAI = AI;
+>>>>>>> master
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
+<<<<<<< HEAD
                     Z_negative_X_negative[i, j] = 0;
                     Z_negative_X_positive[i, j] = 0;
                     Z_positive_X_negative[i, j] = 0;
                     Z_positive_X_positive[i, j] = 0;
+=======
+                    Z_negative_X_negative[i][j] = 0;
+                    Z_negative_X_positive[i][j] = 0;
+                    Z_positive_X_negative[i][j] = 0;
+                    Z_positive_X_positive[i][j] = 0;
+>>>>>>> master
                 }
             }
         }
 
+<<<<<<< HEAD
         int DlyaVlada2( Vector3 side, int side_x, int side_z)
         {
 
@@ -56,6 +81,28 @@ namespace Assets
                 else
                 {
                     Z_negative_X_negative[Math.Abs(side_z), Math.Abs(side_x)] = 1;
+=======
+        int WallRegistration( Vector3 side, int side_x, int side_z)
+        {
+
+            if (Physics.Raycast(transform.position, side, out hit, (transform.localScale.x)))//Обнаружение препятсвия. Переделать.
+            {
+                if ((side_z < 0) && (side_x >= 0))
+                {
+                    Z_negative_X_positive[Math.Abs(side_z)][side_x] = 1; //Добавить библиотеку с модулем
+                }
+                else if ((side_z >= 0) && (side_x > 0))
+                {
+                    Z_positive_X_positive[side_z][side_x] = 1;
+                }
+                else if ((side_z > 0) && (side_x <= 0))
+                {
+                    Z_positive_X_negative[side_z][Math.Abs(side_x)] = 1;
+                }
+                else
+                {
+                    Z_negative_X_negative[Math.Abs(side_z)][Math.Abs(side_x)] = 1;
+>>>>>>> master
                 }
             }
             return 0;
@@ -65,6 +112,7 @@ namespace Assets
         public int arrformap(coordinates Coord, coord_direction direction, float speed)
         {
             //File.Delete("map.txt");
+<<<<<<< HEAD
 
             int side_x = Coord.x + direction.x;
             int side_z = Coord.z + direction.z;
@@ -79,6 +127,22 @@ namespace Assets
             DlyaVlada2(-transform.right, side_x, side_z);
 
             if (speed == 0)
+=======
+			// Заменить transform
+            int side_x = Coord.x + direction.x;
+            int side_z = Coord.z + direction.z;
+            WallRegistration(transform.forward, side_x, side_z);
+            coord_direction side_direction = MovementAI.Direction_if_TurnRight(direction);
+            side_x = Coord.x + side_direction.x;
+            side_z = Coord.z + side_direction.z;
+            WallRegistration(transform.right, side_x, side_z);
+            side_direction = MovementAI.Direction_if_TurnLeft(direction);
+            side_x = Coord.x + side_direction.x;
+            side_z = Coord.z + side_direction.z;
+            WallRegistration(-transform.right, side_x, side_z);
+
+            /*if (speed == 0)
+>>>>>>> master
             {
                 FileInfo fileformap = new FileInfo("map.txt");
                 File.Delete("map.txt");
@@ -124,8 +188,14 @@ namespace Assets
                 }
 
                 sr.Close();
+<<<<<<< HEAD
             }
             return 0;
         }
     }
+=======
+            }*/
+            return 0;
+        }
+>>>>>>> master
 }

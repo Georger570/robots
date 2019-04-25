@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 
 class AI_v1
 {
     //Robot
     int TurnCount = 0;
-    //WorkWithFiles Explored = new WorkWithFiles("pam.txt");
-    //WorkWithFiles Unexplored = new WorkWithFiles("tif.txt");
+=======
+public class AI_v1
+{
+    //Robot
+    int TurnCount = 0;
+    WorkWithFiles Explored = new WorkWithFiles("pam.txt");
+    WorkWithFiles Unexplored = new WorkWithFiles("tif.txt");
+>>>>>>> master
     MovementIntelligence MovementAI;
     public bool changeFlag = false;
     public float sensorLength = 2.0f;
@@ -31,16 +38,24 @@ class AI_v1
     //Map
     Map map;
 
+<<<<<<< HEAD
 	//Lists
 	List Explored;
 	List Unexplored;
+=======
+>>>>>>> master
 
     void Start()
     {
         MovementAI = new MovementIntelligence(Explored, Unexplored);
         MovementAI.Init(transform);
+<<<<<<< HEAD
         //myColloder = transform.GetComponent<Collider>();
         robot_size = (int) 21;
+=======
+        myColloder = transform.GetComponent<Collider>();
+        robot_size = (int) 1;
+>>>>>>> master
         map = new Map(MovementAI, MovementAI.hit, transform);
     }
 
@@ -61,7 +76,11 @@ class AI_v1
             MovementAI.TurnFunction(turnAngle, ref BackFlag);
             TurnCount++;
         }
+<<<<<<< HEAD
         else if (Explored.isAlreadyInList(MovementAI.getFuturePosition()) == true && BackFlag == true)
+=======
+        else if (Explored.isAlreadyinFile(MovementAI.getFuturePosition()) == true && BackFlag == true)
+>>>>>>> master
         {
             TurnCount++;
             MovementAI.speed = 0;
@@ -80,6 +99,7 @@ class AI_v1
         }
     }
 
+<<<<<<< HEAD
     int Sensors(coord position)
     {
         coord side_direction;
@@ -87,14 +107,30 @@ class AI_v1
         {
             side_direction = MovementAI.Direction_if_TurnRight(MovementAI.direction);
             if (!Unexplored.isAlreadyinList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
+=======
+    int Sensors(coordinates position)
+    {
+        coord_direction side_direction;
+        if (!Physics.Raycast(transform.position, transform.right, out MovementAI.hit, (transform.localScale.x)) && !MovementAI.CheckSide(transform.right))
+        {
+            side_direction = MovementAI.Direction_if_TurnRight(MovementAI.direction);
+            if (!Unexplored.isAlreadyinFile(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyinFile(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
+>>>>>>> master
             {
                 Unexplored.AppendLine(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
             }
         }
+<<<<<<< HEAD
         if (!IsObstacleWithinReach(RightSensor, distance) && !MovementAI.CheckSide(-transform.right))
         {
             side_direction = MovementAI.Direction_if_TurnLeft(MovementAI.direction);
             if (!Unexplored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
+=======
+        if (!Physics.Raycast(transform.position, -transform.right, out MovementAI.hit, (transform.localScale.x)) && !MovementAI.CheckSide(-transform.right))
+        {
+            side_direction = MovementAI.Direction_if_TurnLeft(MovementAI.direction);
+            if (!Unexplored.isAlreadyinFile(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyinFile(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
+>>>>>>> master
             {
                 Unexplored.AppendLine(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
             }
