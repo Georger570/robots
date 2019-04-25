@@ -61,9 +61,7 @@ coord List::popList()
 {
     node* tmp = head;
     head = head->next;
-    coord return_me;
-    return_me.x=tmp->x;
-    return_me.y=tmp->y;
+    coord return_me(tmp->x, tmp->y);
     delete(tmp);
     return return_me;
 }
