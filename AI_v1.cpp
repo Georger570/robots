@@ -2,8 +2,11 @@ public class AI_v1
 {
     //Robot
     int TurnCount = 0;
-    //WorkWithFiles Explored = new WorkWithFiles("pam.txt"); 						//Without work with files
-    //WorkWithFiles Unexplored = new WorkWithFiles("tif.txt");						//Without work with files
+<<<<<<< HEAD
+=======
+    WorkWithFiles Explored = new WorkWithFiles("pam.txt");
+    WorkWithFiles Unexplored = new WorkWithFiles("tif.txt");
+>>>>>>> master
     MovementIntelligence MovementAI;
     public bool changeFlag = false;
     public float sensorLength = 2.0f;
@@ -29,10 +32,13 @@ public class AI_v1
      
     //Map
     Map map;
+<<<<<<< HEAD
     
     //List
     List Explored;
     List Unexplored;
+=======
+>>>>>>> master
 
 
     void Start()
@@ -86,17 +92,29 @@ public class AI_v1
         if (!Physics.Raycast(transform.position, transform.right, out MovementAI.hit, (transform.localScale.x)) && !MovementAI.CheckSide(transform.right))
         {
             side_direction = MovementAI.Direction_if_TurnRight(MovementAI.direction);
+<<<<<<< HEAD
             if (!Unexplored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
             {
                 Unexplored.addInBeginOfList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
+=======
+            if (!Unexplored.isAlreadyinFile(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyinFile(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
+            {
+                Unexplored.AppendLine(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
+>>>>>>> master
             }
         }
         if (!Physics.Raycast(transform.position, -transform.right, out MovementAI.hit, (transform.localScale.x)) && !MovementAI.CheckSide(-transform.right))
         {
             side_direction = MovementAI.Direction_if_TurnLeft(MovementAI.direction);
+<<<<<<< HEAD
             if (!Unexplored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyInList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
             {
                 Unexplored.addInBeginOfList(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
+=======
+            if (!Unexplored.isAlreadyinFile(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())) && !Explored.isAlreadyinFile(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition())))
+            {
+                Unexplored.AppendLine(MovementAI.getPosition(side_direction, MovementAI.getCurrentPosition()));
+>>>>>>> master
             }
         }
         return 1;
