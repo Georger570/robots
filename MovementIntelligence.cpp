@@ -184,7 +184,6 @@ void MovementIntelligence::stop()
 {
     analogWrite(SPEED_L, 0);
     analogWrite(SPEED_R, 0);
-    up_global_yaw();
 }
 
 void MovementIntelligence::up_global_yaw()
@@ -325,10 +324,8 @@ bool MovementIntelligence::TryToRegisterMotion(int robot_size) //Определ�
     {
         movement -= robot_size;
         CurrentPosition += direction;
-        //print(x + " " + z);
+        up_global_yaw();
         return true;
-        //WriteFlag = true;
-
     }
     return false;
 }
