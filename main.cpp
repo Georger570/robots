@@ -8,8 +8,8 @@
 //Robot
 int robot_size = 21;
 
-bool deadendFlag = false;
-int back_count = 0;
+bool deadendFlag;
+int back_count;
 
 //Coordinates
 const int StepReach = 11;
@@ -17,7 +17,7 @@ const int StepReach = 11;
 //Map
 //Map map;
 
-int Sensors(coord position);
+int Sensors();
 
 //Lists
 List Explored;
@@ -28,6 +28,8 @@ MovementIntelligence MovementAI(&Explored);
 
 void Start()
 {
+    deadendFlag = false;
+    back_count = 0;
     //MovementAI = new MovementIntelligence(Explored);
     //map = new Map(MovementAI, MovementAI.hit, transform);
     MovementAI.run_fb(1, SPEED);
@@ -43,7 +45,7 @@ void loop()
         MovementAI.stop();
         if (deadendFlag == false)
         {
-            Sensors(MovementAI.getCurrentPosition());
+            Sensors();
             //map.arrformap(MovementAI.getCurrentPosition(), MovementAI.direction, MovementAI.speed);
             if (MovementAI.IsObstaclesAround())
             {
@@ -76,24 +78,24 @@ void loop()
     }
 }
 
-    int Sensors(coord position)
+int Sensors()
+{
+    coord side_direction(0,0);
+    if (!MovementAI.IsObstacleWithinReach(RIGHT_SENSOR, DISTANCE) && !MovementAI.CheckSide(RIGHT))
     {
-        coord side_direction(0,0);
-        if (!MovementAI.IsObstacleWithinReach(RIGHT_SENSOR, DISTANCE) && !MovementAI.CheckSide(RIGHT))
+        side_direction = MovementAI.Direction_if_TurnRight(MovementAI.direction);
+        if (!Unexplored.isAlreadyInList(MovementAI.getFuturePosition(side_direction)) && !Explored.isAlreadyInList(MovementAI.getFuturePosition(side_direction)))
         {
-            side_direction = MovementAI.Direction_if_TurnRight(MovementAI.direction);
-            if (!Unexplored.isAlreadyInList(MovementAI.getFuturePosition(side_direction)) && !Explored.isAlreadyInList(MovementAI.getFuturePosition(side_direction)))
-            {
-                Unexplored.addInBeginOfList(MovementAI.getFuturePosition(side_direction));
-            }
+            Unexplored.addInBeginOfList(MovementAI.getFuturePosition(side_direction));
         }
-        if (!MovementAI.IsObstacleWithinReach(RIGHT_SENSOR, DISTANCE) && !MovementAI.CheckSide(RIGHT))
-        {
-            side_direction = MovementAI.Direction_if_TurnLeft(MovementAI.direction);
-            if (!Unexplored.isAlreadyInList(MovementAI.getFuturePosition(side_direction)) && !Explored.isAlreadyInList(MovementAI.getFuturePosition(side_direction)))
-            {
-                Unexplored.addInBeginOfList(MovementAI.getFuturePosition(side_direction));
-            }
-        }
-        return 1;
     }
+    if (!MovementAI.IsObstacleWithinReach(RIGHT_SENSOR, DISTANCE) && !MovementAI.CheckSide(RIGHT))
+    {
+        side_direction = MovementAI.Direction_if_TurnLeft(MovementAI.direction);
+        if (!Unexplored.isAlreadyInList(MovementAI.getFuturePosition(side_direction)) && !Explored.isAlreadyInList(MovementAI.getFuturePosition(side_direction)))
+        {
+            Unexplored.addInBeginOfList(MovementAI.getFuturePosition(side_direction));
+        }
+    }
+    return 1;
+}
