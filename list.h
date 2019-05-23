@@ -6,25 +6,26 @@
 class List
 {
 public:
-    struct node
-    {
-        coord coords;
-        node* next;
-    };
+	struct node
+	{
+		coord coords;
+		node* next;
+	};
 
-    node* head;
-    node* tail;
+	node* head;
+	node* tail;
 
-    List() : head(NULL), tail(NULL) {};
-    ~List();
-    void addInBeginOfList(coord position); //
-    bool isEmptyList();
-    void showList();
-    node* findInList(coord position, char flag);
-    bool isAlreadyInList(coord position);
-    coord popList();
+	List() : head(NULL), tail(NULL) {};
+	~List();
+	void addInBeginOfList(coord position); //
+	void addInEndOfList(coord position);
+	bool isEmptyList();
+	void showList();
+	node* findInList(coord position, char flag);
+	bool isAlreadyInList(coord position);
+	coord popList();
 	coord popTail();
-    void deleteNodeInList(node** nodeAdress);
+	void deleteNodeInList(node** nodeAdress);
 };
 
 #endif
